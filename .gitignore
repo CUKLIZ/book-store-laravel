@@ -1,0 +1,42 @@
+# Log files
+*.log
+storage/logs/*
+laravel.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.*
+!.env.example  # <-- ini penting biar contoh .env tetap ikut di repo
+
+# Laravel specific
+/public/storage
+/storage/*.key
+/storage/pail
+/vendor
+
+# IDE & Editor folders
+/.idea
+/.vscode
+/.phpunit.cache
+.phpunit.result.cache
+/.fleet
+/.nova
+/.zed
+.phpactor.json
+
+# Node / frontend
+/node_modules
+/public/hot
+/public/build
+
+# Composer auth file
+/auth.json
+
+# Vite / Mix
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
