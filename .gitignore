@@ -10,7 +10,6 @@ Thumbs.db
 # Environment files
 .env
 .env.*
-!.env.example  # <-- ini penting biar contoh .env tetap ikut di repo
 
 # Laravel specific
 /public/storage
