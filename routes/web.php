@@ -20,3 +20,5 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('category/{slug}', [CategoryController::class, 'category'])->name('category.show');
