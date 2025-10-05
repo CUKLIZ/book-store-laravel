@@ -68,3 +68,17 @@
 .animate-fade-in-up {
     animation: fade-in-up 0.8s ease-out;
 }
+
+/* Spinner Animation - Reverse direction untuk ring kedua */
+@keyframes spin-reverse {
+    from {
+        transform: rotate(360deg);
+    }
+    to {
+        transform: rotate(0deg);
+    }
+}
+
+.animation-delay-150 {
+    animation: spin-reverse 1s linear infinite;
+}
