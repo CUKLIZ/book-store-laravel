@@ -90,3 +90,10 @@
 .hover-book:hover {
     animation: book-lift 0.3s ease-out forwards;
 }
+
+@layer base {
+    html {
+        /* Ini adalah properti yang mengaktifkan gulir mulus di browser modern */
+        scroll-behavior: smooth; 
+    }
+}

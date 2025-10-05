@@ -2,8 +2,8 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
         <a href="{{ route('home') }}" class="text-2xl font-bold text-white">MyCommerce</a> 
         <div class="space-x-4">
-            <a href="#" class="text-gray-300 hover:text-white">Kategori</a> 
-            <a href="#" class="text-gray-300 hover:text-white">Promo</a>
+            <a href="#category-id" class="text-gray-300 hover:text-white">Category</a> 
+            <a href="#products-section" class="text-gray-300 hover:text-white">Books</a>
             @auth
                 <a href="{{ url('/dashboard') }}" class="text-gray-300 hover:text-white">Dashboard</a>
             @else

@@ -18,7 +18,7 @@
     </div>
 
     <div class="text-center mb-8">
-        <h2 class="text-3xl font-bold text-white mb-2">Produk Unggulan</h2>
+        <h2 class="text-3xl font-bold text-white mb-2">Books</h2>
         <div class="w-20 h-1 bg-gradient-to-r from-emerald-500 to-cyan-500 mx-auto rounded-full"></div>
     </div>
 

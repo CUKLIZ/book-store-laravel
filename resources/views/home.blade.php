@@ -8,7 +8,9 @@
     <x-carousel />
 
     {{-- Category --}}
-    <x-category :categories="$categories" />
+    <section id="category-id" class="py-12">
+        <x-category :categories="$categories" />
+    </section>
 
     {{-- Product --}}
     <div id="products-section">
