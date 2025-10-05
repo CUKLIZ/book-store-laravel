@@ -13,12 +13,17 @@ class HomeController extends Controller
         $products = Product::paginate(12);
         $categories = Category::all();
 
-        // Jika AJAX → return partial view saja (produk + pagination)
+        $currentPage = $products->currentPage();
+        $lastPage = $products->lastPage();
+
+        if ($currentPage > $lastPage && $lastPage > 0) {
+            return redirect($products->url($lastPage))->with('warning', 'Halaman yang Anda minta terlalu besar. Anda diarahkan ke halaman terakhir.');
+        }
+
         if ($request->ajax()) {
             return view('components.product', compact('products'))->render();
         }
 
-        // Jika biasa → return full page
         return view('home', compact('products', 'categories'));
     }
 }
