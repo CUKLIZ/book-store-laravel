@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Storage;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -21,6 +22,7 @@ class User extends Authenticatable
         'name',
         'username',
         'email',
+        'email_verified_at',
         'password',
         'role',
         'alamat',
@@ -64,5 +66,21 @@ class User extends Authenticatable
     public function logs()
     {
         return $this->hasMany(Log::class);
+    }
+
+    public function getProfilePhotoUrlAttribute()
+    {
+        // Jika ada foto profile
+        if ($this->profile_photo) {
+            return Storage::url($this->profile_photo);
+        }
+
+        // Jika nga ada
+        return 'https://i.pravatar.cc/150?u='.$this->email;
+    }
+
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new \App\Notifications\VerifyEmailNotification());
     }
 }

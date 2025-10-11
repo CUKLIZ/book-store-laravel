@@ -21,14 +21,16 @@ class UserSeeder extends Seeder
             'name' => 'Admin',
             'username' => 'admin',
             'email' => 'admin@admin.com',
+            'email_verified_at' => now(),
             'password' => Hash::make('password'), // Password: password
             'role' => 'admin',
             'alamat' => 'Admin Address',
             'no_hp' => '1234567890',
             'profile_photo' => null,
-            // 'remember_token' => Str::random(10),
+            'remember_token' => Str::random(10),
         ]);
 
-        User::factory(50)->create();
+        User::factory(5)->create();
+        User::factory(5)->unverified()->create();
     }
 }

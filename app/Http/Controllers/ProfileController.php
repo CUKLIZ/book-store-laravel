@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -56,5 +57,30 @@ class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return Redirect::to('/');
+    }
+
+    public function updatePhoto(Request $request): RedirectResponse
+    {
+        $request->validateWithBag('updateProfilePhoto', [
+            'profile_photo' => [
+                'required',       
+                'image',          
+                'mimes:jpg,jpeg,png',
+                'max:2048',      
+            ],
+        ]);
+
+        $user = Auth::user();
+
+        // 2. Hapus foto lama jika ada
+        if ($user->profile_photo) {
+            Storage::disk('public')->delete($user->profile_photo);
+        }
+
+        $path = $request->file('profile_photo')->store('profile-photos', 'public');
+
+        $user->update(['profile_photo' => $path]);
+
+        return Redirect::route('profile.edit')->with('status', 'profile-photo-updated');
     }
 }
