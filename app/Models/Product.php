@@ -30,4 +30,11 @@ class Product extends Model
     public function orderItems() {
         return $this->hasMany(OrderItem::class);
     }
+
+    public function genres()
+    {
+        // Parameter pertama: Model yang akan dihubungkan (Genre::class).
+        // Parameter kedua (opsional): Nama tabel pivot (default: 'genre_product').
+        return $this->belongsToMany(Genre::class, 'genre_product');
+    }
 }

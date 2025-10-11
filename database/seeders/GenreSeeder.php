@@ -9,47 +9,56 @@ use Illuminate\Support\Str;
 
 class GenreSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // Manual dulu kalau tahu cara otomatis nanti di bikin otomatis
-        // 1. Dapatkan ID Kategori utama Fiksi dan Non-Fiksi.
-        // Anda mungkin perlu menyesuaikan ini tergantung nama kategori yang Anda gunakan.
-        $fictionCategory = Category::whereIn('slug', ['novel', 'fantasi', 'misteri-thriller'])->first();
-        $nonFictionCategory = Category::whereIn('slug', ['motivasi-pengembangan-diri', 'sejarah', 'agama-spiritual'])->first();
+        // Mapping kategori → daftar genre 
+        $genreGroups = [
+            'novel' => ['Romance', 'Fantasi', 'Thriller Psikologis', 'Drama Kehidupan', 'Slice of Life', 'Mystery Detective'],
+            'cerpen' => ['Cerpen Inspiratif', 'Cerpen Remaja', 'Cerpen Kehidupan'],
+            'fantasi' => ['High Fantasy', 'Urban Fantasy', 'Dark Fantasy', 'Isekai'],
+            'petualangan' => ['Adventure Survival', 'Exploration Quest'],
+            'misteri-thriller' => ['Crime Thriller', 'Murder Mystery', 'Suspense Thriller'],
+            'horor' => ['Horor Gotik', 'Horor Supranatural', 'Horor Psikologis'],
+            'romantis' => ['Romantis Sekolah', 'Romantis Dewasa', 'Romantis Komedi'],
+            'fiksi-ilmiah-sci-fi' => ['Cyberpunk', 'Space Opera', 'Time Travel'],
+            'drama' => ['Drama Keluarga', 'Drama Persahabatan', 'Drama Realistis'],
+            'fiksi-sejarah' => ['Historical Fiction', 'Alternate History'],
 
-        // Pastikan kategorinya ada
-        if (! $fictionCategory || ! $nonFictionCategory) {
-            $this->command->info('Pastikan CategorySeeder sudah dijalankan dan kategori Fiksi/Non-Fiksi ada.');
+            // Non-Fiksi
+            'biografi-autobiografi' => ['Biografi Tokoh Nasional', 'Biografi Inspiratif'],
+            'motivasi-pengembangan-diri' => ['Self Improvement', 'Life Coaching', 'Mindset Positif'],
+            'sejarah' => ['Sejarah Nusantara', 'Perang Dunia', 'Sejarah Peradaban'],
+            'politik-sosial' => ['Politik Modern', 'Kajian Sosial'],
+            'agama-spiritual' => ['Studi Islam', 'Renungan Harian', 'Spiritual Modern'],
+            'sains-teknologi' => ['Teknologi Digital', 'Fisika Populer', 'Artificial Intelligence'],
+            'psikologi' => ['Psikologi Klinis', 'Psikologi Populer', 'Mental Health'],
+            'pendidikan' => ['Metode Belajar', 'Pendidikan Karakter'],
+            'kesehatan-gaya-hidup' => ['Kesehatan Tubuh', 'Gaya Hidup Sehat'],
+            'ekonomi-bisnis' => ['Bisnis Startup', 'Marketing Digital', 'Investasi'],
+        ];
 
-            return;
+        // Proses insert genre berdasarkan kategori yang cocok
+        foreach ($genreGroups as $categorySlug => $genres) {
+            $category = Category::where('slug', $categorySlug)->first();
+
+            if (! $category) {
+                $this->command->warn("Kategori dengan slug '{$categorySlug}' tidak ditemukan. Skip...");
+                continue;
+            }
+
+            foreach ($genres as $genreName) {
+                Genre::updateOrCreate(
+                    [
+                        'name' => $genreName,
+                        'category_id' => $category->id,
+                    ],
+                    [
+                        'slug' => Str::slug($genreName),
+                    ]
+                );
+            }
         }
 
-        // 2. Daftar Genre Fiksi
-        $fictionGenres = ['Fantasi Epik', 'Romantis Kontemporer', 'Fiksi Kriminal', 'Sci-Fi Post-Apocalyptic', 'Horor Gotik', 'Thriller Psikologis'];
-
-        // 3. Daftar Genre Non-Fiksi
-        $nonFictionGenres = ['Biografi Politik', 'Panduan Karir', 'Sejarah Kuno', 'Studi Islam', 'Psikologi Terapan', 'Bisnis Startup'];
-
-        // 4. Proses Seeding Genre Fiksi
-        foreach ($fictionGenres as $name) {
-            Genre::create([
-                'category_id' => $fictionCategory->id,
-                'name' => $name,
-                'slug' => Str::slug($name),
-            ]);
-        }
-
-        // 5. Proses Seeding Genre Non-Fiksi
-        foreach ($nonFictionGenres as $name) {
-            Genre::create([
-                'category_id' => $nonFictionCategory->id,
-                'name' => $name,
-                'slug' => Str::slug($name),
-            ]);
-        }
-
+        $this->command->info('✅ GenreSeeder selesai! Semua genre berhasil dimasukkan sesuai kategori.');
     }
 }
