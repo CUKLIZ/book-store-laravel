@@ -21,6 +21,7 @@ class ProductFactory extends Factory
             'category_id' => \App\Models\Category::factory(),
             'name' => $name,
             'slug' => \Str::slug($name),
+            'author' => $this->faker->name(),
             'description' => $this->faker->sentence(),
             'price' => $this->faker->randomFloat(2,10000, 1000000),
             'stock' => $this->faker->numberBetween(0, 100),
