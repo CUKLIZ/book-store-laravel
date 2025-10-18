@@ -25,7 +25,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 require __DIR__.'/auth.php';
 
 Route::get('/categories', [CategoryController::class, 'index'])->name('categories.showAll');
-Route::get('/categories/{slug}', [CategoryController::class, 'show'])->name('category.show');
+// Route::get('/categories/{slug}', [CategoryController::class, 'show'])->name('category.show');
+Route::get('/categories/{category:slug}', [CategoryController::class, 'show'])->name('category.show');
 
 Route::get('/email/verified', function () {
     // 🔥 LANGKAH BARU 2: Cek token sesi sebelum menampilkan view
@@ -39,3 +40,6 @@ Route::get('/email/verified', function () {
     return view('auth.verified');
 })->name('verification.success')->middleware(['auth', 'verified']);
 // middleware('auth')->name('verification.notice')
+
+Route::get('category/{category:slug}/genres', [CategoryController::class, 'showGenres'])->name('category.genres');
+Route::get('category/{category:slug}/genres/{genre:slug}', [CategoryController::class, 'showProducts'])->name('genre.products');

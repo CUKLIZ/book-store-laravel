@@ -13,10 +13,10 @@ class Category extends Model
 
     protected $fillable = ['name', 'slug', 'category_id'];
 
-    public function products()
-    {
-        return $this->belongsToMany(Product::class, 'genre_product');
-    }
+    // public function products()
+    // {
+    //     return $this->belongsToMany(Product::class, 'genre_product');
+    // }
 
     public function category()
     {
