@@ -3,8 +3,12 @@
 // use Diglactic\Breadcrumbs\Facades\Breadcrumbs;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 
+Breadcrumbs::for('home', function ($trail) {
+    $trail->push('Home', route('home'));
+});
 
 Breadcrumbs::for('categories.showAll', function ($trail) {
+    $trail->parent('home');
     $trail->push('Kategori', route('categories.showAll'));
 });
 
