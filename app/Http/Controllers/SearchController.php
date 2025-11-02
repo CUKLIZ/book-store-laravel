@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Product;
@@ -74,11 +75,13 @@ class SearchController extends Controller
         }
     }
 
-    // Full search untuk halaman search
+    // Full search untuk halaman search dengan filter dan sorting
     public function search(Request $request)
     {
         $query = $request->input('q', '');
         $query = trim($query);
+        $stockFilter = $request->input('stock'); // 'all' atau null
+        $sortBy = $request->input('sort');
 
         // Initialize default values
         $total = 0;
@@ -87,27 +90,78 @@ class SearchController extends Controller
         // Hanya search jika query valid
         if (strlen($query) >= 2) {
             try {
-                $products = Product::query()
-                    ->where(function ($q) use ($query) {
-                        $q->where('name', 'LIKE', '%'.$query.'%')
-                            ->orWhere('author', 'LIKE', '%'.$query.'%');
-                    })
-                    ->with(['category', 'genres'])
-                    ->orderByRaw('
-                        CASE 
-                            WHEN name LIKE ? THEN 1
-                            WHEN author LIKE ? THEN 2
-                            ELSE 3
-                        END
-                    ', [$query.'%', $query.'%'])
-                    ->orderBy('created_at', 'desc')
-                    ->paginate(12)
-                    ->appends(['q' => $query]);
+                // Start query builder
+                $productsQuery = Product::query()->with(['category', 'genres']);
+
+                // Filter berdasarkan search query
+                $productsQuery->where(function ($q) use ($query) {
+                    $q->where('name', 'LIKE', '%'.$query.'%')
+                        ->orWhere('author', 'LIKE', '%'.$query.'%')
+                        ->orWhere('description', 'LIKE', '%'.$query.'%');
+                });
+
+                // Filter berdasarkan stock
+                // DEFAULT: Hanya tampilkan produk dengan stok tersedia
+                // KECUALI user explicitly memilih 'all' (toggle OFF)
+                if ($stockFilter !== 'all') {
+                    $productsQuery->where('stock', '>', 0);
+                }
+                // Jika stock === 'all', tampilkan semua produk (termasuk yang habis)
+
+                // Sorting
+                switch ($sortBy) {
+                    case 'newest':
+                        $productsQuery->orderBy('created_at', 'desc');
+                        break;
+                    
+                    case 'oldest':
+                        $productsQuery->orderBy('created_at', 'asc');
+                        break;
+                    
+                    case 'name_asc':
+                        $productsQuery->orderBy('name', 'asc');
+                        break;
+                    
+                    case 'name_desc':
+                        $productsQuery->orderBy('name', 'desc');
+                        break;
+                    
+                    case 'price_low':
+                        $productsQuery->orderBy('price', 'asc');
+                        break;
+                    
+                    case 'price_high':
+                        $productsQuery->orderBy('price', 'desc');
+                        break;
+                    
+                    default:
+                        // Default: relevance - prioritas kecocokan nama
+                        $productsQuery->orderByRaw('
+                            CASE 
+                                WHEN name LIKE ? THEN 1
+                                WHEN author LIKE ? THEN 2
+                                ELSE 3
+                            END
+                        ', [$query.'%', $query.'%'])
+                        ->orderBy('created_at', 'desc');
+                        break;
+                }
+
+                // Paginate dengan append query parameters
+                $products = $productsQuery->paginate(12)->appends([
+                    'q' => $query,
+                    'stock' => $stockFilter,
+                    'sort' => $sortBy,
+                ]);
 
                 $total = $products->total();
 
             } catch (\Exception $e) {
-                Log::error('Full Search Error: '.$e->getMessage());
+                Log::error('Full Search Error: '.$e->getMessage(), [
+                    'query' => $query,
+                    'stock' => $stockFilter,
+                    'sort' => $sortBy,
+                ]);
 
                 // Jika error, tetap return empty collection
                 $products = collect();
