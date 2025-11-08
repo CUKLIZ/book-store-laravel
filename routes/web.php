@@ -29,6 +29,9 @@ Route::get('/categories/{category:slug}', [CategoryController::class, 'show'])->
 Route::get('category/{category:slug}/genres', [CategoryController::class, 'showGenres'])->name('category.genres');
 Route::get('category/{category:slug}/genres/{genre:slug}', [CategoryController::class, 'showProducts'])->name('genre.products');
 
+// Product Detail Route
+Route::get('/products/{slug}', [App\Http\Controllers\ProductController::class, 'show'])->name('product.show');
+
 // Email Verification
 Route::get('/email/verified', function () {
     if (!session()->has('verification_success_token')) {

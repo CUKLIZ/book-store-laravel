@@ -1,6 +1,7 @@
 @import "flowbite/src/themes/default";
 @import 'custom.css'; 
 @import 'search-filters.css';
+@import 'product-detail.css';
 
 @tailwind base; 
 @tailwind components;
