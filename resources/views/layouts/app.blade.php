@@ -18,7 +18,7 @@
 <body class="font-sans antialiased bg-gray-900 text-gray-200">
     <div class="min-h-screen flex flex-col">
 
-        @include('partials.navbar')        
+        @include('partials.navbar')
 
         @include('components.breadcrumb')
 
@@ -27,6 +27,9 @@
         </main>
 
         @include('partials.footer')
+
+        <x-login-modal />
+        <x-notification />
 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>

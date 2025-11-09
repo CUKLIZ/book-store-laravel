@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 
 // Home
@@ -47,4 +48,13 @@ Route::middleware('throttle:60,1')->group(function () {
     
     // Full Search Page - 60 requests per minute
     Route::get('/search', [SearchController::class, 'search'])->name('search.page');
+});
+
+// Cart Routes
+Route::controller(CartController::class)->group(function () {
+    Route::get('/cart', 'index')->name('cart.index');
+    Route::post('/cart/add', 'add')->name('cart.add');
+    Route::put('/cart/{id}', 'update')->name('cart.update');
+    Route::delete('/cart/{id}', 'remove')->name('cart.remove');
+    Route::get('/cart/count', 'count')->name('cart.count');
 });
